@@ -1,0 +1,35 @@
+# Cursor extension allowlist — ./install.sh cursor installs missing + prunes extras.
+# Refresh from machine: dot-cursor-backup
+#
+# Pruned 2026-06-22 vs live install (removed duplicates, unused, or Cursor-built-in):
+#   ktiays.aicursor, docker.docker, ms-azuretools.vscode-docker (use containers),
+#   nrwl.angular-console, redhat.ansible, twxs.cmake, ms-python.vscode-python-envs,
+#   ms-vscode.cpptools-themes,
+#   ms-toolsai.jupyter-{keymap,renderers,cell-tags,slideshow} (jupyter meta-pack deps)
+
+anthropic.claude-code
+anysphere.cursorpyright
+anysphere.remote-containers
+anysphere.remote-ssh
+eamodio.gitlens
+ecmel.vscode-html-css
+esbenp.prettier-vscode
+firsttris.vscode-jest-runner
+github.vscode-github-actions
+mechatroner.rainbow-csv
+ms-azuretools.vscode-containers
+ms-python.debugpy
+ms-python.isort
+ms-python.python
+ms-toolsai.jupyter
+ms-vscode.cmake-tools
+ms-vscode.cpptools
+ms-vscode.cpptools-extension-pack
+ms-vscode.makefile-tools
+redhat.vscode-yaml
+rogalmic.bash-debug
+samuelcolvin.jinjahtml
+shakram02.bash-beautify
+sissel.shopify-liquid
+timonwong.shellcheck
+vscodevim.vim

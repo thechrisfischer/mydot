@@ -1,0 +1,50 @@
+# GNU Screen configuration
+
+shell -$SHELL
+
+vbell off
+startup_message off
+
+# UTF-8 support (required for emoji/unicode in prompts)
+defutf8 on
+
+# Allow bold colors
+attrcolor b ".I"
+
+# Tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Enables use of shift-PgUp and shift-PgDn
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Erase background with current bg color
+defbce "on"
+
+# Enable 256 color term
+term xterm-256color
+
+# Enable truecolor (24-bit RGB) passthrough
+truecolor on
+
+# Set COLORTERM so apps (e.g. Claude Code) know truecolor is available
+setenv COLORTERM truecolor
+
+# Cache 30000 lines for scroll back
+defscrollback 30000
+
+# Mouse scrolling support
+termcapinfo xterm* ti@:te@
+
+# Block programs (e.g. Claude Code) from overriding window titles via escape sequences.
+# Our PROMPT_COMMAND uses `screen -X title` which bypasses this restriction.
+defdynamictitle off
+
+# --- Status bar: SSH-focused ---
+# Left: user@host | windows | Right: focused window's title (%t) set by PROMPT_COMMAND
+hardstatus alwayslastline
+hardstatus string "%{= KW}%{KC}$USER%{KW}@%{KG}%H%{KW} | %{Kd}%-w%{Kr}[%{KW}%n %t%{Kr}]%{Kd}%+w %-= %{KY}%t%{-}"
+
+# Hide hardstatus: ctrl-a f
+bind f eval "hardstatus ignore"
+# Show hardstatus: ctrl-a F
+bind F eval "hardstatus alwayslastline"

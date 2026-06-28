@@ -1,0 +1,19 @@
+# Local credential cache (fill in your own export lines; never commit).
+.bash/credentials.bash
+
+# Generated from templates during install
+system/iterm2/com.googlecode.iterm2.plist
+
+# Spotify OAuth token / misc cache
+.cache
+
+
+# Claude Code local state
+.claude/
+
+# Per-user config (seeded from config.bash.example on first install)
+.bash/config.bash
+
+# Machine-local editor state (canonical IDE config lives in ide/)
+.cursor/
+.vscode/

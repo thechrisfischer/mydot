@@ -1,0 +1,29 @@
+#!/bin/bash
+# Example user config. On first install, this is copied to ~/.bash/config.bash
+# (which is gitignored) if that file does not already exist. Edit your local
+# ~/.bash/config.bash — not this template.
+
+# Git identity (written into ~/.gitconfig during install). Leave empty and
+# install skips it; set both to have install configure git for you.
+DOTFILES_GIT_NAME=""   # e.g. "Your Name"
+DOTFILES_GIT_EMAIL=""  # e.g. "you@example.com"
+
+# Branch name prefix for dot-branch-name (defaults to $(whoami) if empty)
+DOTFILES_BRANCH_PREFIX=""
+
+# Path to your local clone of the dotfiles repo (used by backup functions)
+DOTFILES_DIR="$HOME/Code/dotfiles"
+
+# Host registry API URL for dot-hosts (leave empty to disable)
+DOTFILES_HOSTS_API_URL=""
+
+# Python path for pipx (auto-detected if empty)
+DOTFILES_PIPX_PYTHON=""
+
+# Space-separated list of function modules to skip loading
+# e.g. "dot-hosts dot-gitclean"
+DOTFILES_SKIP_MODULES=""
+
+# Optional: lighter shell startup / prompt.
+# DOTFILES_FAST_SHELL="1"   # skip optional completions (Heroku, gcloud, …)
+# DOTFILES_FAST_PROMPT="1"  # git branch in prompt only (no dirty check)

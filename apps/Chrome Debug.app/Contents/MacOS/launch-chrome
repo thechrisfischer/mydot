@@ -1,0 +1,20 @@
+#!/usr/bin/osascript
+
+-- Launch Google Chrome with remote debugging enabled on port 9222.
+-- Allows Chrome DevTools MCP and other debugging tools to connect.
+-- The debug port only listens on localhost — safe for everyday use.
+
+set chromePath to "/Applications/Google Chrome.app"
+
+tell application "System Events"
+	if not (exists disk item chromePath) then
+		display dialog "Google Chrome not found in /Applications." buttons {"OK"} default button "OK" with icon stop
+		return
+	end if
+end tell
+
+if application "Google Chrome" is running then
+	tell application "Google Chrome" to activate
+else
+	do shell script "open -a " & quoted form of chromePath & " --args --remote-debugging-port=9222 &"
+end if

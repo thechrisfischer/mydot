@@ -1,0 +1,11 @@
+# SSH config installed to ~/.ssh/config.d/dotfiles by ./install.sh ssh.
+# Only a generic GitHub block ships here. Add your own hosts to ~/.ssh/config
+# or a private ~/.ssh/config.d/*.local file (kept out of this public repo).
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    UseKeychain yes

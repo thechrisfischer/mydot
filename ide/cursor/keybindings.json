@@ -1,0 +1,21 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "shift+cmd+y",
+        "command": "editor.action.inlineDiffs.acceptAllAcrossAllEditors",
+        "when": "editorHasPromptBar && editorTextFocus || editorTextFocus && hasDisplayedDiff"
+    },
+    {
+        "key": "cmd+pausebreak",
+        "command": "-editor.action.inlineDiffs.acceptAllAcrossAllEditors",
+        "when": "editorHasPromptBar && editorTextFocus || editorTextFocus && hasDisplayedDiff"
+    },
+    {
+        "key": "cmd+i",
+        "command": "composerMode.agent"
+    },
+    {
+        "key": "cmd+l",
+        "command": "composerMode.chat"
+    }
+]

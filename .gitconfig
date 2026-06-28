@@ -1,0 +1,6 @@
+# User identity is written at install time from DOTFILES_GIT_NAME /
+# DOTFILES_GIT_EMAIL in ~/.bash/config.bash (see install/dotfiles.bash).
+[core]
+  excludesfile = ~/.gitignore_global
+[push]
+  default = tracking

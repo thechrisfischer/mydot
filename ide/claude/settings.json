@@ -1,0 +1,12 @@
+{
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "autoUpdatesChannel": "latest",
+  "claudeInChromeDefaultEnabled": true,
+  "enabledPlugins": {
+    "chrome-devtools-mcp@claude-plugins-official": true
+  }
+}
