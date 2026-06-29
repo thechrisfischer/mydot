@@ -32,11 +32,11 @@ DOTFILES_GITHUB='<you>/mydot' \
 
 # Clone only — run install yourself
 DOTFILES_SKIP_INSTALL_ALL=1 \
-  /bin/bash -c "$(curl -fsSL ...)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
 
 # Headless / CI (instead of browser login)
 GITHUB_TOKEN='ghp_...' \
-  /bin/bash -c "$(curl -fsSL ...)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
 ```
 
 ## Manual path (if you already have Homebrew + gh)

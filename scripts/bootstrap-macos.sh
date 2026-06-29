@@ -21,7 +21,6 @@ set -euo pipefail
 
 DOTFILES_REPO="${DOTFILES_REPO:-$HOME/Code/mydot}"
 DOTFILES_GITHUB="${DOTFILES_GITHUB:-thechrisfischer/mydot}"
-DOTFILES_RAW_BASE="${DOTFILES_RAW_BASE:-https://raw.githubusercontent.com/thechrisfischer/mydot/main}"
 
 _is_apple_silicon() {
     [[ "$(uname -m)" == "arm64" ]]
