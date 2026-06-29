@@ -6,11 +6,11 @@
 # clones dotfiles with gh (HTTPS), then hands off to ./install.sh.
 #
 # Usage (on a fresh Mac):
-#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/dotfiles/main/scripts/bootstrap-macos.sh)"
+#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
 #
 # Optional env vars:
-#   DOTFILES_REPO=~/Code/dotfiles     clone destination
-#   DOTFILES_GITHUB=thechrisfischer/dotfiles
+#   DOTFILES_REPO=~/Code/mydot        clone destination
+#   DOTFILES_GITHUB=thechrisfischer/mydot
 #   DOTFILES_SKIP_INSTALL_ALL=1       stop after clone (don't run install.sh all)
 #   GITHUB_TOKEN=...                  non-interactive gh auth (CI / headless)
 #
@@ -18,9 +18,9 @@
 
 set -euo pipefail
 
-DOTFILES_REPO="${DOTFILES_REPO:-$HOME/Code/dotfiles}"
-DOTFILES_GITHUB="${DOTFILES_GITHUB:-thechrisfischer/dotfiles}"
-DOTFILES_RAW_BASE="${DOTFILES_RAW_BASE:-https://raw.githubusercontent.com/thechrisfischer/dotfiles/main}"
+DOTFILES_REPO="${DOTFILES_REPO:-$HOME/Code/mydot}"
+DOTFILES_GITHUB="${DOTFILES_GITHUB:-thechrisfischer/mydot}"
+DOTFILES_RAW_BASE="${DOTFILES_RAW_BASE:-https://raw.githubusercontent.com/thechrisfischer/mydot/main}"
 
 _is_apple_silicon() {
     [[ "$(uname -m)" == "arm64" ]]
@@ -116,7 +116,11 @@ _clone_dotfiles() {
         git -C "$DOTFILES_REPO" pull --ff-only
     else
         echo "→ Cloning $DOTFILES_GITHUB → $DOTFILES_REPO"
-        gh repo clone "$DOTFILES_GITHUB" "$DOTFILES_REPO"
+        if ! git clone "https://github.com/$DOTFILES_GITHUB.git" "$DOTFILES_REPO" 2>/dev/null; then
+            echo "  public clone failed — authenticating with gh and retrying"
+            _ensure_github_auth
+            gh repo clone "$DOTFILES_GITHUB" "$DOTFILES_REPO"
+        fi
     fi
     echo "✅ Dotfiles at $DOTFILES_REPO"
 }
@@ -131,7 +135,6 @@ _main() {
     _ensure_xcode_clt
     _ensure_homebrew
     _ensure_gh_packages
-    _ensure_github_auth
     _optional_ssh_key
     _clone_dotfiles
 
