@@ -2,8 +2,9 @@
 # Bootstrap a brand-new Mac before dotfiles exists locally.
 #
 # Fetches this script over HTTPS (no SSH key required). Installs Xcode CLT,
-# Homebrew, GitHub CLI, authenticates via browser (username/password/SSO),
-# clones dotfiles with gh (HTTPS), then hands off to ./install.sh.
+# Homebrew, and GitHub CLI, then clones the repo over public HTTPS with no
+# GitHub login (browser `gh` auth is only a fallback for private/forked
+# repos), and hands off to ./install.sh.
 #
 # Usage (on a fresh Mac):
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
