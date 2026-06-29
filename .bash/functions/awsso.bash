@@ -139,7 +139,7 @@ EOF
     esac
 
     if ! command -v aws >/dev/null 2>&1; then
-        echo "✗ aws CLI not found. Run: ~/Code/dotfiles/install.sh packages" >&2
+        echo "✗ aws CLI not found. Run: ~/Code/mydot/install.sh packages" >&2
         return 1
     fi
 

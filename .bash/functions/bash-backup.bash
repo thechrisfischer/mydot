@@ -8,7 +8,7 @@ bash-backup() {
         return 0
     fi
 
-    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/dotfiles}"
+    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/mydot}"
 
     # Check if dotfiles directory exists
     if [[ ! -d "$dotfiles_dir" ]]; then

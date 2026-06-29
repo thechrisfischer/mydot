@@ -33,13 +33,13 @@ The Network Host Reporting app is integrated into the main dotfiles installation
 
 ### Install Network Reporting Only
 ```bash
-cd /path/to/dotfiles
+cd ~/Code/mydot
 ./install.sh network
 ```
 
 ### Install as Part of Complete Setup
 ```bash
-cd /path/to/dotfiles
+cd ~/Code/mydot
 ./install.sh all
 ```
 
@@ -176,7 +176,7 @@ curl -X POST \
 
 2. **Delete the network directory**:
    ```bash
-   rm -rf /path/to/dotfiles/apps/network
+   rm -rf ~/Code/mydot/apps/network
    ```
 
 ## File Structure

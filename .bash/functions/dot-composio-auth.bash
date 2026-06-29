@@ -26,7 +26,7 @@ Commands:
   legacy-reset
            Clear scoped legacy Composio mcp-remote OAuth state
 
-See ~/Code/dotfiles/mcp/composio-auth.md for the runbook.
+See ~/Code/mydot/mcp/composio-auth.md for the runbook.
 EOF
 }
 

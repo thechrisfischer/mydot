@@ -13,7 +13,7 @@ The current setup is OAuth-first. Do not register Composio through the old
 ## Install
 
 ```bash
-cd ~/Code/dotfiles
+cd ~/Code/mydot
 ./install.sh composio
 ```
 

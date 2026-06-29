@@ -5,7 +5,7 @@ Cursor IDE settings, keybindings, snippets, and extensions live here.
 ## Installation
 
 ```bash
-cd ~/Code/dotfiles
+cd ~/Code/mydot
 ./install.sh cursor   # merge settings + sync extensions from extensions.txt
 ./install.sh apps     # Cursor.app via Homebrew cask (macOS)
 ```
