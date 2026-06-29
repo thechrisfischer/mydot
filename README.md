@@ -102,11 +102,13 @@ Additional knobs (**AWS PKG**, **Impeccable skill**) match `./install.sh --help`
 
 ### Platform Coverage
 
+**Supported OS:** macOS 10.6+ (Snow Leopard and newer; MacPorts `.pkg` auto-install down to 10.6, 10.5 is manual) on Intel and Apple Silicon; Debian/Ubuntu (apt) on Linux. dnf/yum mappings exist but are best-effort and untested.
+
 | Area | macOS | Linux |
 | --- | --- | --- |
 | Dotfiles | copied | copied |
 | Packages | Homebrew/MacPorts | apt/dnf/yum + direct installers |
-| GUI apps | Homebrew casks | skipped/manual |
+| GUI apps | Homebrew casks | Chrome via apt (Debian/Ubuntu) |
 | Cursor settings | `~/Library/Application Support/Cursor/User` | `~/.config/Cursor/User` |
 | Claude Code settings | shared | shared |
 | Codex plugins | shared | shared |
