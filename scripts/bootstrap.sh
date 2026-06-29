@@ -75,6 +75,22 @@ _ensure_git_linux() {
     fi
 }
 
+# Add cli.github.com apt repo and install gh on Debian/Ubuntu.
+# Self-contained (bootstrap.sh runs pre-clone and cannot source install/_helpers.bash).
+_bootstrap_install_gh_apt() {
+    echo "  → adding cli.github.com apt repo..."
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    if ! curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | sudo gpg --dearmor --yes -o /etc/apt/keyrings/githubcli-archive-keyring.gpg; then
+        echo "❌ gh: keyring import failed" >&2; return 1
+    fi
+    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    printf 'deb [arch=%s signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\n' \
+        "$(dpkg --print-architecture)" \
+        | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    sudo apt-get update && sudo apt-get install -y gh
+}
+
 _clone_dotfiles() {
     mkdir -p "$(dirname "$DOTFILES_REPO")"
     if [[ -d "$DOTFILES_REPO/.git" ]]; then
@@ -87,7 +103,7 @@ _clone_dotfiles() {
     echo "  public clone failed — authenticating with gh (private/fork) and retrying"
     if ! command -v gh &>/dev/null; then
         if [[ "$(_bootstrap_os)" == macos ]] && command -v brew &>/dev/null; then brew install gh
-        elif command -v apt-get &>/dev/null; then _bootstrap_prime_sudo || true; sudo apt-get install -y gh || true
+        elif command -v apt-get &>/dev/null; then _bootstrap_prime_sudo || true; _bootstrap_install_gh_apt || true
         fi
     fi
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then printf '%s\n' "$GITHUB_TOKEN" | gh auth login -h github.com --with-token
