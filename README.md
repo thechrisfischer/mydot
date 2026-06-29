@@ -85,7 +85,7 @@ This repo is designed to be forked and adapted. Before running the installer on 
 
 Add `--verbose` to any command for full command output instead of the compact progress summary.
 
-`./install.sh --help` (also `-h` or `help`) prints installer commands and **optional `DOTFILES_*` tuning variables** (minimal GUI installs, skip metadata syncs, AWS/Dashlane paths).
+`./install.sh --help` (also `-h` or `help`) prints installer commands and **optional `DOTFILES_*` tuning variables** (minimal GUI installs, skip metadata syncs, AWS paths).
 
 ### Legacy macOS tuning (`DOTFILES_*`)
 
@@ -98,7 +98,7 @@ On Apple Silicon, `install.sh` restarts itself as arm64 when launched from Roset
 | `DOTFILES_SKIP_MACPORTS_UPDATE=1` | Skip `port selfupdate`. |
 | `DOTFILES_SKIP_BREW_UPDATE=1` | Skip `brew update` prefetch. |
 
-Additional knobs (**dcli**, **AWS PKG**, **Impeccable skill**) match `./install.sh --help`. Full table: **CLAUDE.md** → *Legacy macOS and optional install tuning*.
+Additional knobs (**AWS PKG**, **Impeccable skill**) match `./install.sh --help`. Full table: **CLAUDE.md** → *Legacy macOS and optional install tuning*.
 
 ### Platform Coverage
 
@@ -192,7 +192,7 @@ Multi-line prompt with:
 - Screen window title updates via `PROMPT_COMMAND`
 
 ### Custom Functions (`.bash/functions/`)
-All support `-h`/`--help`. Most use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `dash`, `llmfix`, `bash-backup`) don't.
+All support `-h`/`--help`. Most use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `llmfix`, `bash-backup`) don't.
 
 | Function | Purpose |
 |----------|---------|

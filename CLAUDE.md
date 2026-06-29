@@ -71,7 +71,7 @@ The shell config is split into modular files, all sourced by `.bashrc`:
 - **`credentials.bash`** — Local credential cache (gitignored). Fill it in yourself with `export VAR=...` lines for any secrets the tooling needs (e.g. `GREPLER_TOKEN`, `ANTHROPIC_API_KEY`); sourced by `prefs.bash` if present
 
 ### Bash Functions (`.bash/functions/`)
-Most custom functions use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `dash`, `llmfix`, `bash-backup`) don't. Each lives in its own file:
+Most custom functions use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `llmfix`, `bash-backup`) don't. Each lives in its own file:
 - **`awsso`** — Interactive picker for `aws sso login`. Reads `[sso-session ...]` blocks from `~/.aws/config`. Bare `awsso` shows a menu (or logs in directly when only one session exists); `awsso <name>` skips the menu; `awsso --all` logs into every session. After a single-session login, mirrors temporary credentials into `~/.aws/credentials` under both `[default]` and `[<matching profile>]` so tools that hit the default credential chain (no `AWS_PROFILE` / `--profile`) pick up the most recently logged-in session. `--all` skips the mirror (ambiguous which session should win).
 - **`dot-aws-switch`** — Set the active AWS profile for the current shell. Bare `dot-aws-switch` shows a numbered picker of `[profile ...]` blocks; `dot-aws-switch <name>` sets directly; `dot-aws-switch --unset` clears `AWS_PROFILE`/`AWS_REGION`. Exports `AWS_REGION` from the chosen profile's `region =` line (and unsets it when the profile has none, to avoid stale leakage).
 - **`dot-branch-name`** — Generate branch names: `{prefix}/{MMDD}/{feature}`
@@ -80,7 +80,6 @@ Most custom functions use the `dot-` prefix; a few short, unambiguous tools (`aw
 - **`dot-kill`** — Kill processes by name (graceful then force)
 - **`dot-gitclean`** — Delete merged branches + prune remotes
 - **`dot-fly-switch`** — Switch Fly.io CLI context (work/personal)
-- **`dash`** — Dashlane vault access via `dcli`. Subcommands: `search`, `get`, `otp`, `note`, `unlock`, `admin`. Also supports a bare-site shortcut: `dash <site>` (any non-reserved first arg) routes to `unlock`. `unlock <site>` runs search + get + otp + note in one shot; piped mode dumps every match as `TITLE:`/`LOGIN:`/`PASSWORD:`/`OTP_CODE:`/`NOTE:` lines. Every retrieval also scans the entry's `note` field for `otpauth://totp/...` URLs and auto-mints the 6-digit TOTP code (note-embedded seeds work alongside Dashlane's native OTP store — both paths run, both surface). TTY-aware emit — copies to clipboard when run interactively, prints to stdout when captured (so tool invocations can read the value directly). Every retrieval is appended to `~/.dash.log` (best-effort). First-run: `dash admin setup`.
 - **`dot-cursor-backup`** — Export Cursor settings/extensions and commit to this repo
 - **`dot-iterm-backup`** — Re-template the live `system/iterm2/com.googlecode.iterm2.plist` (which iTerm has been writing to directly) into `com.googlecode.iterm2.plist.template` with `$HOME` → `__DOTFILES_HOME__`, then commit/push
 - **`dot-claude-sync`** — Mirror enabled Claude Desktop extensions into Claude Code's `mcpServers` in `~/.claude.json`. Reads each extension's `manifest.json` + matching `Claude Extensions Settings/<id>.json`, resolves `${__dirname}` to absolute paths, inlines non-sensitive `user_config` values, and emits sensitive values as `${ENV_VAR}` refs (uppercase of the user_config key — set the matching var in `credentials.bash`). Tags each entry with `_source: "claude-extension:<id>"` so re-runs sweep removed/disabled extensions. Re-run after installing or updating a Desktop extension.
@@ -152,7 +151,7 @@ Retired MCPs (`lifelog`, `glowscape`) are listed in `_cleanup_stale_mcp_servers`
 
 ## Conventions
 
-- Most custom bash functions use the `dot-` prefix (e.g., `dot-kill`, `dot-hosts`, `dot-branch-name`, `dot-commit-llm`); a few short, unambiguous tools (`awsso`, `dash`, `llmfix`, `bash-backup`) don't
+- Most custom bash functions use the `dot-` prefix (e.g., `dot-kill`, `dot-hosts`, `dot-branch-name`, `dot-commit-llm`); a few short, unambiguous tools (`awsso`, `llmfix`, `bash-backup`) don't
 - Each function lives in its own file under `.bash/functions/` (named after the primary function)
 - Tightly coupled private helpers (e.g., `_dot-hosts-*`) stay with their parent function's file
 - Functions include `-h`/`--help` support with usage text
