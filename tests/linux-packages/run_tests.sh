@@ -27,7 +27,7 @@ assert_mapping virtualenv apt "python3-venv python3-virtualenv"
 assert_mapping shellcheck yum "ShellCheck"
 assert_mapping uv apt ""
 
-bash -n install.sh install/_helpers.bash install/packages.bash install/apps.bash install/dictation.bash install/cursor.bash install/shell.bash install/external-fs.bash
+bash -n install.sh install/_helpers.bash install/packages.bash install/apps.bash install/dictation.bash install/cursor.bash install/shell.bash
 
 # gh apt repo wiring
 ( set -euo pipefail
