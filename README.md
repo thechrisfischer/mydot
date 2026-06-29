@@ -1,35 +1,32 @@
-# Dotfiles
+# mydot
 
-Personal development environment for macOS and Linux. Manages bash configuration, IDE settings, vim, MCP servers, credentials, and system utilities. Files are **copied** (not symlinked) to `~` during installation.
+Personal development environment for macOS and Linux: bash configuration, coding-agent CLIs (Claude Code, Cursor, Codex), vim, MCP servers, and cross-platform install tooling. Files are **copied** (not symlinked) to `~` during installation.
 
 ## Quick Start
 
 ### Brand-new Mac (nothing installed yet)
 
-Use the HTTPS bootstrap script — no SSH key required (browser GitHub login):
-
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<your-username>/dotfiles/main/scripts/bootstrap-macos.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
 ```
+
+This installs Xcode Command Line Tools, then Homebrew, before cloning the repo and running `./install.sh all`.
 
 See [`docs/fresh-mac-bootstrap.md`](docs/fresh-mac-bootstrap.md) for fresh-machine setup and troubleshooting.
 
-### Already have Homebrew + GitHub access
+### Already have Homebrew
 
 ```bash
-gh auth login -h github.com -p https -w
-gh repo clone <your-username>/dotfiles ~/Code/dotfiles
-cd ~/Code/dotfiles
+git clone https://github.com/thechrisfischer/mydot.git ~/Code/mydot
+cd ~/Code/mydot
 ./install.sh all
 ```
 
-Avoid `git clone git@github.com:...` on a machine with no SSH key unless you have set one up.
-
-### Legacy quick start (SSH)
+### Legacy quick start (SSH — only if you have an SSH key set up)
 
 ```bash
-git clone git@github.com:<your-username>/dotfiles.git ~/Code/dotfiles
-cd ~/Code/dotfiles
+git clone git@github.com:thechrisfischer/mydot.git ~/Code/mydot
+cd ~/Code/mydot
 ./install.sh all
 ```
 
@@ -46,6 +43,21 @@ export OPENAI_API_KEY="..."
 ```
 
 `prefs.bash` sources the file if present. Do not commit it.
+
+## Fork This First
+
+This repo is designed to be forked and adapted. Before running the installer on your own machine, make these three changes in your fork:
+
+1. **Repo identity** — The bootstrap script clones the repo identified by the `DOTFILES_GITHUB` env var (not by the URL you curl from). Simply changing the curl URL fetches your script but still clones upstream. To install YOUR fork, do one of:
+   - Pass it inline:
+     ```bash
+     DOTFILES_GITHUB=<you>/mydot /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap-macos.sh)"
+     ```
+   - Or edit the `DOTFILES_GITHUB` default in your fork's `scripts/bootstrap-macos.sh`, then run from your fork's URL.
+
+2. **Git identity** — Set `DOTFILES_GIT_NAME`, `DOTFILES_GIT_EMAIL`, and `DOTFILES_DIR` (e.g. `$HOME/Code/mydot`) in `.bash/config.bash`. Copy `config.bash.example` as a starting point.
+
+3. **Secrets** — Create `~/.bash/credentials.bash` with `export` lines for your tokens and API keys (gitignored; no secret-sync backend ships with this repo).
 
 ## Installation Commands
 
@@ -104,7 +116,7 @@ Additional knobs (**dcli**, **AWS PKG**, **Impeccable skill**) match `./install.
 ## Repository Structure
 
 ```
-dotfiles/
+mydot/
 ├── .bash/                      # Shell configuration
 │   ├── config.bash             # User-specific settings (DOTFILES_* vars)
 │   ├── prefs.bash              # PATH, env vars, aliases, pipx config

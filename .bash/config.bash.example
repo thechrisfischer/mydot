@@ -12,7 +12,7 @@ DOTFILES_GIT_EMAIL=""  # e.g. "you@example.com"
 DOTFILES_BRANCH_PREFIX=""
 
 # Path to your local clone of the dotfiles repo (used by backup functions)
-DOTFILES_DIR="$HOME/Code/dotfiles"
+DOTFILES_DIR="$HOME/Code/mydot"
 
 # Host registry API URL for dot-hosts (leave empty to disable)
 DOTFILES_HOSTS_API_URL=""

@@ -120,12 +120,12 @@ Re-run after installing, updating, or disabling a Desktop extension. macOS only.
 
 1. Clone this repo:
    ```bash
-   git clone <repo-url> ~/Code/dotfiles
+   git clone https://github.com/thechrisfischer/mydot.git ~/Code/mydot
    ```
 
 2. Install dotfiles:
    ```bash
-   cd ~/Code/dotfiles && ./install.sh dotfiles
+   cd ~/Code/mydot && ./install.sh dotfiles
    ```
 
 3. Install Claude settings:

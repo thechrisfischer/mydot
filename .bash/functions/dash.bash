@@ -68,7 +68,7 @@ EOF
 # non-interactive contexts).
 _dash_ensure_setup() {
     if ! command -v dcli &> /dev/null; then
-        echo "✗ dcli is not installed. Run: ~/Code/dotfiles/install.sh packages" >&2
+        echo "✗ dcli is not installed. Run: ~/Code/mydot/install.sh packages" >&2
         return 1
     fi
 

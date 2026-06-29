@@ -18,7 +18,7 @@ dot-iterm-backup() {
         return 0
     fi
 
-    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/dotfiles}"
+    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/mydot}"
     local live_plist="$dotfiles_dir/system/iterm2/com.googlecode.iterm2.plist"
     local tmpl="$dotfiles_dir/system/iterm2/com.googlecode.iterm2.plist.template"
 

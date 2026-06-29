@@ -16,7 +16,7 @@ dot-cursor-backup() {
         return 0
     fi
 
-    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/dotfiles}"
+    local dotfiles_dir="${DOTFILES_DIR:-$HOME/Code/mydot}"
     local cursor_app_dir
     cursor_app_dir=$(_dot_cursor_config_root) || {
         echo "Error: Unsupported OS for Cursor backup: $(uname -s)"
