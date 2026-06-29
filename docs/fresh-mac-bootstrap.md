@@ -5,10 +5,10 @@ dotfiles install.
 
 ## Recommended: one-line bootstrap (HTTPS first)
 
-On a fresh Mac, in Terminal (replace `<your-username>` with your GitHub fork):
+On a fresh Mac, in Terminal:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<your-username>/dotfiles/main/scripts/bootstrap-macos.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
 ```
 
 This script:
@@ -16,17 +16,19 @@ This script:
 1. Installs **Xcode Command Line Tools** (macOS GUI prompt)
 2. Installs **Homebrew** (sudo password)
 3. Installs **gh**, git, curl, jq
-4. Runs **`gh auth login -h github.com -p https -w`** (browser — no SSH key needed)
-5. **`gh repo clone`** dotfiles to `~/Code/dotfiles`
-6. Runs **`./install.sh ssh`** (installs the SSH config)
-7. Runs **`./install.sh all`**
+4. **`git clone`** `https://github.com/thechrisfischer/mydot` to `~/Code/mydot` (no GitHub login required)
+5. Runs **`./install.sh ssh`** (installs the SSH config)
+6. Runs **`./install.sh all`**
+
+> **Note:** `gh auth login` is only needed as a fallback when cloning a private or forked repo.
 
 ### Optional environment variables
 
 ```bash
-# Override which repo to clone (defaults to the repo the script came from)
-DOTFILES_GITHUB='<your-username>/dotfiles' \
-  /bin/bash -c "$(curl -fsSL ...)"
+# Forked it? Pass your fork's repo and use your fork's raw URL.
+# (Changing the URL alone clones upstream, not your fork.)
+DOTFILES_GITHUB='<you>/mydot' \
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap-macos.sh)"
 
 # Clone only — run install yourself
 DOTFILES_SKIP_INSTALL_ALL=1 \
@@ -40,14 +42,14 @@ GITHUB_TOKEN='ghp_...' \
 ## Manual path (if you already have Homebrew + gh)
 
 ```bash
-gh auth login -h github.com -p https -w
-gh auth setup-git
 mkdir -p ~/Code
-gh repo clone <your-username>/dotfiles ~/Code/dotfiles
-cd ~/Code/dotfiles
+git clone https://github.com/thechrisfischer/mydot ~/Code/mydot
+cd ~/Code/mydot
 ./install.sh ssh
 ./install.sh all
 ```
+
+> **Note:** If cloning a private or forked repo, run `gh auth login -h github.com -p https -w` and `gh auth setup-git` before the `git clone` step.
 
 ## SSH keys (bring your own)
 
