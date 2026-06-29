@@ -7,10 +7,10 @@ Personal development environment for macOS and Linux: bash configuration, coding
 ### Brand-new Mac (nothing installed yet)
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap.sh)"
 ```
 
-This installs Xcode Command Line Tools, then Homebrew, before cloning the repo and running `./install.sh all`.
+Installs only what's needed to clone (Xcode CLT on macOS, git on Debian/Ubuntu), then clones and runs `./install.sh all`, which prefers MacPorts on macOS <15, Homebrew on 15+, and apt on Linux. (The legacy `bootstrap-macos.sh` URL still works.)
 
 See [`docs/fresh-mac-bootstrap.md`](docs/fresh-mac-bootstrap.md) for fresh-machine setup and troubleshooting.
 
@@ -51,9 +51,9 @@ This repo is designed to be forked and adapted. Before running the installer on 
 1. **Repo identity** — The bootstrap script clones the repo identified by the `DOTFILES_GITHUB` env var (not by the URL you curl from). Simply changing the curl URL fetches your script but still clones upstream. To install YOUR fork, do one of:
    - Pass it inline:
      ```bash
-     DOTFILES_GITHUB=<you>/mydot /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap-macos.sh)"
+     DOTFILES_GITHUB=<you>/mydot /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap.sh)"
      ```
-   - Or edit the `DOTFILES_GITHUB` default in your fork's `scripts/bootstrap-macos.sh`, then run from your fork's URL.
+   - Or edit the `DOTFILES_GITHUB` default in your fork's `scripts/bootstrap.sh`, then run from your fork's URL.
 
 2. **Git identity** — Set `DOTFILES_GIT_NAME`, `DOTFILES_GIT_EMAIL`, and `DOTFILES_DIR` (e.g. `$HOME/Code/mydot`) in `.bash/config.bash`. Copy `config.bash.example` as a starting point.
 

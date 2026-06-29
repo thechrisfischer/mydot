@@ -8,17 +8,16 @@ dotfiles install.
 On a fresh Mac, in Terminal:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap.sh)"
 ```
 
 This script:
 
-1. Installs **Xcode Command Line Tools** (macOS GUI prompt)
-2. Installs **Homebrew** (sudo password)
-3. Installs **gh**, git, curl, jq
-4. **`git clone`** `https://github.com/thechrisfischer/mydot` to `~/Code/mydot` (no GitHub login required)
-5. Runs **`./install.sh ssh`** (installs the SSH config)
-6. Runs **`./install.sh all`**
+1. Installs **Xcode Command Line Tools** on macOS (macOS GUI prompt) or **git** on Debian/Ubuntu (sudo password)
+2. Installs **gh**, git, curl, jq
+3. **`git clone`** `https://github.com/thechrisfischer/mydot` to `~/Code/mydot` (no GitHub login required)
+4. Runs **`./install.sh ssh`** (installs the SSH config)
+5. Runs **`./install.sh all`**, which prefers MacPorts on macOS <15, Homebrew on 15+, and apt on Linux
 
 > **Note:** `gh auth login` is only needed as a fallback when cloning a private or forked repo.
 
@@ -28,15 +27,15 @@ This script:
 # Forked it? Pass your fork's repo and use your fork's raw URL.
 # (Changing the URL alone clones upstream, not your fork.)
 DOTFILES_GITHUB='<you>/mydot' \
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap-macos.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap.sh)"
 
 # Clone only — run install yourself
 DOTFILES_SKIP_INSTALL_ALL=1 \
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap.sh)"
 
 # Headless / CI (instead of browser login)
 GITHUB_TOKEN='ghp_...' \
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap.sh)"
 ```
 
 ## Manual path (if you already have Homebrew + gh)
@@ -87,4 +86,4 @@ export ANTHROPIC_API_KEY="..."
 
 - SSH config template: `system/ssh/config`
 - This doc: `docs/fresh-mac-bootstrap.md`
-- Bootstrap script: `scripts/bootstrap-macos.sh`
+- Bootstrap script: `scripts/bootstrap.sh` (legacy `bootstrap-macos.sh` URL still works)
