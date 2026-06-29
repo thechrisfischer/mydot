@@ -176,7 +176,7 @@ function timestamp {
 
 function _verify_repo_complete {
     # Guard against running from an incomplete copy of the repo. The classic
-    # failure is `cp ~/Downloads/dotfiles-main/* ~/dest/` — a bare `*` glob does
+    # failure is `cp ~/Downloads/mydot-main/* ~/dest/` — a bare `*` glob does
     # NOT match dotfiles, so the entire `.bash/` tree, `.bashrc`, etc. are
     # silently left behind. The installer then "succeeds" (green checkmarks)
     # while copying nothing and nothing sources. Catch it up front with a
@@ -204,16 +204,16 @@ function _verify_repo_complete {
     echo "   copied with a bare glob, e.g. \`cp /path/dotfiles-main/* dest/\`, which" >&2
     echo "   skips everything starting with a dot. Get a complete copy instead:" >&2
     echo "" >&2
-    echo "     git clone git@github.com:thechrisfischer/dotfiles.git ~/Code/dotfiles" >&2
-    echo "     cd ~/Code/dotfiles && ./install.sh all" >&2
+    echo "     git clone https://github.com/thechrisfischer/mydot.git ~/Code/mydot" >&2
+    echo "     cd ~/Code/mydot && ./install.sh all" >&2
     echo "" >&2
-    echo "   Or, if you already extracted a download to e.g. ~/Downloads/dotfiles-main," >&2
+    echo "   Or, if you already extracted a download to e.g. ~/Downloads/mydot-main," >&2
     echo "   run the installer from there directly (do not \`cp dir/*\` first):" >&2
     echo "" >&2
-    echo "     cd ~/Downloads/dotfiles-main && ./install.sh all" >&2
+    echo "     cd ~/Downloads/mydot-main && ./install.sh all" >&2
     echo "" >&2
     echo "   To copy a download into a working dir including dotfiles, use:" >&2
-    echo "     cp -R ~/Downloads/dotfiles-main/. ~/Code/dotfiles/" >&2
+    echo "     cp -R ~/Downloads/mydot-main/. ~/Code/mydot/" >&2
     return 1
 }
 
