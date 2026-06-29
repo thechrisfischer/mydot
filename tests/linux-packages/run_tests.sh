@@ -22,10 +22,25 @@ assert_mapping() {
     [[ "$actual" == "$expected" ]] || fail "_linux_packages_for $name $pm: expected '$expected', got '$actual'"
 }
 
+assert_mapping python3 apt "python3"
 assert_mapping node apt "nodejs npm"
-assert_mapping virtualenv apt "python3-venv python3-virtualenv"
+assert_mapping jq apt "jq"
+assert_mapping shellcheck apt "shellcheck"
 assert_mapping shellcheck yum "ShellCheck"
+assert_mapping flake8 apt "python3-flake8"
+assert_mapping virtualenv apt "python3-venv python3-virtualenv"
+assert_mapping virtualenv dnf "python3-virtualenv"
+assert_mapping pipx apt "pipx"
+assert_mapping screen apt "screen"
+assert_mapping tmux apt "tmux"
+assert_mapping cmatrix apt "cmatrix"
+assert_mapping awscli apt "awscli"
+assert_mapping git apt "git"
+assert_mapping wget apt "wget"
+assert_mapping tree apt "tree"
+assert_mapping ccache apt "ccache"
 assert_mapping uv apt ""
+assert_mapping flyctl apt ""
 
 bash -n install.sh install/_helpers.bash install/packages.bash install/apps.bash install/dictation.bash install/cursor.bash install/shell.bash
 
