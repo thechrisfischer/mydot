@@ -497,6 +497,28 @@ function _macports_selfupdate_once {
     _DOTFILES_MACPORTS_UPDATED=1
 }
 
+function _sudo_prompt_channel {
+    # Decide where to read the sudo password from. Prefer /dev/tty whenever it
+    # is writable — that is the only channel that survives `curl | bash` (stdin
+    # is the script) and captured sections (stdout/stderr redirected). Falls
+    # back to stdin when it is a TTY, else "none" (headless — caller needs
+    # DOTFILES_SUDO_PASSWORD).
+    local tty_writable stdin_tty
+    if [[ -n "${_DOTFILES_TEST_TTY_WRITABLE:-}" ]]; then
+        tty_writable="$_DOTFILES_TEST_TTY_WRITABLE"
+    else
+        { [ -w /dev/tty ]; } 2>/dev/null && tty_writable=1 || tty_writable=0
+    fi
+    if [[ -n "${_DOTFILES_TEST_STDIN_TTY:-}" ]]; then
+        stdin_tty="$_DOTFILES_TEST_STDIN_TTY"
+    else
+        [[ -t 0 ]] && stdin_tty=1 || stdin_tty=0
+    fi
+    if [[ "$tty_writable" == 1 ]]; then echo tty; return 0; fi
+    if [[ "$stdin_tty" == 1 ]]; then echo stdin; return 0; fi
+    echo none
+}
+
 function _dotfiles_sudo {
     # Use the real sudo binary, not a shell alias (Cursor sets `sudo -A`) and
     # never inherit SUDO_ASKPASS — both break non-interactive cache refresh.
@@ -517,9 +539,6 @@ function _ensure_sudo_cached {
     fi
 
     local msg="Caching sudo credentials for the install (you'll be prompted once)..."
-    # Agent/CI shells often lack a controlling TTY and may not share the
-    # parent's sudo timestamp with child install.sh processes. Accept a
-    # one-shot password for that case only — never persist it in config.
     if [[ -n "${DOTFILES_SUDO_PASSWORD:-}" ]]; then
         if printf '%s\n' "$DOTFILES_SUDO_PASSWORD" | _dotfiles_sudo -S -v 2>/dev/null; then
             _spawn_sudo_keepalive
@@ -527,22 +546,24 @@ function _ensure_sudo_cached {
         fi
     fi
 
-    # _section_run redirects stdout/stderr to a temp file. Route the cache
-    # prompt to /dev/tty so the password dialog is never swallowed mid-install.
-    if [[ "${_DOTFILES_SECTION_CAPTURE:-0}" == 1 ]] && { [ -w /dev/tty ] 2>/dev/null; }; then
-        printf '%s\n' "$msg" > /dev/tty
-        if ! _dotfiles_sudo -v < /dev/tty > /dev/tty 2>&1; then
-            printf '❌ sudo access required\n' > /dev/tty
+    case "$(_sudo_prompt_channel)" in
+        tty)
+            printf '%s\n' "$msg" > /dev/tty
+            if ! _dotfiles_sudo -v < /dev/tty > /dev/tty 2>&1; then
+                printf '❌ sudo access required\n' > /dev/tty
+                return 1
+            fi
+            ;;
+        stdin)
+            echo "$msg"
+            _dotfiles_sudo -v || { echo "❌ sudo access required"; return 1; }
+            ;;
+        none)
+            echo "$msg" >&2
+            echo "❌ sudo access required (no TTY — run from Terminal or set DOTFILES_SUDO_PASSWORD for this session)" >&2
             return 1
-        fi
-    elif [[ -t 0 ]]; then
-        echo "$msg"
-        _dotfiles_sudo -v || { echo "❌ sudo access required"; return 1; }
-    else
-        echo "$msg" >&2
-        echo "❌ sudo access required (no TTY — run from Terminal or set DOTFILES_SUDO_PASSWORD for this session)" >&2
-        return 1
-    fi
+            ;;
+    esac
     _spawn_sudo_keepalive
 }
 
