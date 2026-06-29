@@ -310,6 +310,30 @@ function _linux_packages_for {
     esac
 }
 
+function _gh_apt_source_line {
+    printf 'deb [arch=%s signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\n' "$(dpkg --print-architecture 2>/dev/null || echo amd64)"
+}
+
+function _linux_install_gh {
+    command -v gh >/dev/null 2>&1 && { _install_step_done "gh" "already installed"; return 0; }
+    _ensure_sudo_cached || { _install_step_fail "gh" "sudo required"; return 1; }
+    _install_step_start "gh" "adding cli.github.com apt repo..."
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    if ! curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | sudo gpg --dearmor --yes -o /etc/apt/keyrings/githubcli-archive-keyring.gpg; then
+        _install_step_fail "gh" "keyring import failed"; return 1
+    fi
+    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    _gh_apt_source_line | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    _DOTFILES_APT_UPDATED=0  # force a refresh now that a new source exists
+    _apt_update_once || return 1
+    if sudo apt-get install -y gh >/dev/null 2>&1; then
+        _install_step_done_changed "gh" "installed (apt + cli.github.com)"
+    else
+        _install_step_fail "gh" "apt install failed"; return 1
+    fi
+}
+
 function _apt_update_once {
     if [[ "${DOTFILES_SKIP_APT_UPDATE:-0}" == 1 ]]; then
         _install_progress "apt metadata update skipped (DOTFILES_SKIP_APT_UPDATE=1)"
@@ -331,6 +355,10 @@ function _linux_pkg_install {
         _install_step_fail "$name" "no supported Linux package manager"
         return 1
     }
+
+    if [[ "$name" == gh && "$pm" == apt ]]; then
+        _linux_install_gh; return $?
+    fi
 
     packages=$(_linux_packages_for "$name" "$pm")
     if [[ -z "$packages" ]]; then
