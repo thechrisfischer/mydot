@@ -62,4 +62,35 @@ expect_slug_fail "10.5.9"
 expect_slug_fail "42.0.0"
 expect_slug_fail ""
 
+expect_port() {
+    local brew="$1" want="$2"
+    ( # shellcheck disable=SC1091
+      source "$REPO_ROOT/install/_helpers.bash"
+      got=$(_macports_name_for "$brew")
+      [[ "$got" == "$want" ]] || { echo "name_for $brew expected='$want' got='$got'" >&2; exit 1; }
+    ) || fail "_macports_name_for $brew → $want"
+}
+expect_port python3    python312
+expect_port node       nodejs22
+expect_port npm        npm10
+expect_port virtualenv py312-virtualenv
+expect_port flake8     py312-flake8
+expect_port jq         jq
+expect_port flyctl     ""           # no port — caller falls back
+
+# awscli is Darwin-version-gated:
+expect_awscli() { local dmaj="$1" want="$2"
+    ( # shellcheck disable=SC1091
+      source "$REPO_ROOT/install/_helpers.bash"
+      # Capture dmaj into a separate name; _macports_awscli_port_name declares its
+      # own local dmaj which would shadow ours under set -u.
+      _awscli_mock_dmaj="$dmaj"
+      uname() { [[ "$1" == -r ]] && echo "${_awscli_mock_dmaj}.0.0" || command uname "$@"; }
+      got=$(_macports_awscli_port_name)
+      [[ "$got" == "$want" ]] || { echo "awscli dmaj=$dmaj expected=$want got=$got" >&2; exit 1; }
+    ) || fail "_macports_awscli_port_name dmaj=$dmaj → $want"
+}
+expect_awscli 20 py312-awscli2   # macOS 11+ (Darwin 20)
+expect_awscli 19 py311-awscli    # macOS 10.15 (Darwin 19)
+
 echo "macports tests passed"

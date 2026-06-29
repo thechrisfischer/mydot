@@ -897,13 +897,14 @@ function _macports_name_for {
     # https://ports.macports.org/search/?q=<foo>&name=on — port names often
     # diverge from brew formula names (e.g. brew "node" → port "nodejs22").
     local brew_name="$1"
+    local PORT_PYTHON=python312 PORT_NODE=nodejs22 PORT_NPM=npm10 PY=py312
     case "$brew_name" in
-        python3)    echo "python312" ;;
-        node)       echo "nodejs22" ;;
-        npm)        echo "npm10" ;;
+        python3)    echo "$PORT_PYTHON" ;;
+        node)       echo "$PORT_NODE" ;;
+        npm)        echo "$PORT_NPM" ;;
         pipx)       echo "pipx" ;;
-        virtualenv) echo "py312-virtualenv" ;;
-        flake8)     echo "py312-flake8" ;;
+        virtualenv) echo "${PY}-virtualenv" ;;
+        flake8)     echo "${PY}-flake8" ;;
         awscli)     _macports_awscli_port_name ;;
         flyctl)     echo "" ;;  # not packaged — caller falls back
         # Same name in both managers:
