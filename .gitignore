@@ -17,3 +17,6 @@ system/iterm2/com.googlecode.iterm2.plist
 # Machine-local editor state (canonical IDE config lives in ide/)
 .cursor/
 .vscode/
+
+# Subagent-driven-development scratch (ledger, briefs, reports, diffs)
+.superpowers/

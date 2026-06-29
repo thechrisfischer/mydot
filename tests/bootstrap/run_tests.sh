@@ -89,3 +89,15 @@ test_grepler_agent_is_opt_in
 test_bootstrap_script_is_executable
 
 echo "bootstrap tests passed"
+
+# --- bootstrap.sh OS + macOS package-strategy detection ---
+( set -euo pipefail
+  # shellcheck disable=SC1091
+  source "$REPO_ROOT/scripts/bootstrap.sh" --source-only
+  # macOS <15 → macports, >=15 → homebrew
+  [[ "$(_bootstrap_macos_pkg_strategy 13.6.1)" == macports ]] || { echo "13.6 should be macports" >&2; exit 1; }
+  [[ "$(_bootstrap_macos_pkg_strategy 10.14.6)" == macports ]] || { echo "10.14 should be macports" >&2; exit 1; }
+  [[ "$(_bootstrap_macos_pkg_strategy 15.0)"   == homebrew ]] || { echo "15.0 should be homebrew" >&2; exit 1; }
+  [[ "$(_bootstrap_macos_pkg_strategy 26.0)"   == homebrew ]] || { echo "26.0 should be homebrew" >&2; exit 1; }
+) || fail "bootstrap macOS strategy detection"
+echo "bootstrap detection tests passed"

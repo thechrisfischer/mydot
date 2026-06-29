@@ -7,10 +7,10 @@ Personal development environment for macOS and Linux: bash configuration, coding
 ### Brand-new Mac (nothing installed yet)
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap-macos.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/thechrisfischer/mydot/main/scripts/bootstrap.sh)"
 ```
 
-This installs Xcode Command Line Tools, then Homebrew, before cloning the repo and running `./install.sh all`.
+Installs only what's needed to clone (Xcode CLT on macOS, git on Debian/Ubuntu), then clones and runs `./install.sh all`, which prefers MacPorts on macOS <15, Homebrew on 15+, and apt on Linux. (The legacy `bootstrap-macos.sh` URL still works.)
 
 See [`docs/fresh-mac-bootstrap.md`](docs/fresh-mac-bootstrap.md) for fresh-machine setup and troubleshooting.
 
@@ -51,9 +51,9 @@ This repo is designed to be forked and adapted. Before running the installer on 
 1. **Repo identity** — The bootstrap script clones the repo identified by the `DOTFILES_GITHUB` env var (not by the URL you curl from). Simply changing the curl URL fetches your script but still clones upstream. To install YOUR fork, do one of:
    - Pass it inline:
      ```bash
-     DOTFILES_GITHUB=<you>/mydot /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap-macos.sh)"
+     DOTFILES_GITHUB=<you>/mydot /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/mydot/main/scripts/bootstrap.sh)"
      ```
-   - Or edit the `DOTFILES_GITHUB` default in your fork's `scripts/bootstrap-macos.sh`, then run from your fork's URL.
+   - Or edit the `DOTFILES_GITHUB` default in your fork's `scripts/bootstrap.sh`, then run from your fork's URL.
 
 2. **Git identity** — Set `DOTFILES_GIT_NAME`, `DOTFILES_GIT_EMAIL`, and `DOTFILES_DIR` (e.g. `$HOME/Code/mydot`) in `.bash/config.bash`. Copy `config.bash.example` as a starting point.
 
@@ -85,7 +85,7 @@ This repo is designed to be forked and adapted. Before running the installer on 
 
 Add `--verbose` to any command for full command output instead of the compact progress summary.
 
-`./install.sh --help` (also `-h` or `help`) prints installer commands and **optional `DOTFILES_*` tuning variables** (minimal GUI installs, skip metadata syncs, AWS/Dashlane paths).
+`./install.sh --help` (also `-h` or `help`) prints installer commands and **optional `DOTFILES_*` tuning variables** (minimal GUI installs, skip metadata syncs, AWS paths).
 
 ### Legacy macOS tuning (`DOTFILES_*`)
 
@@ -98,15 +98,17 @@ On Apple Silicon, `install.sh` restarts itself as arm64 when launched from Roset
 | `DOTFILES_SKIP_MACPORTS_UPDATE=1` | Skip `port selfupdate`. |
 | `DOTFILES_SKIP_BREW_UPDATE=1` | Skip `brew update` prefetch. |
 
-Additional knobs (**dcli**, **AWS PKG**, **Impeccable skill**) match `./install.sh --help`. Full table: **CLAUDE.md** → *Legacy macOS and optional install tuning*.
+Additional knobs (**AWS PKG**, **Impeccable skill**) match `./install.sh --help`. Full table: **CLAUDE.md** → *Legacy macOS and optional install tuning*.
 
 ### Platform Coverage
+
+**Supported OS:** macOS 10.6+ (Snow Leopard and newer; MacPorts `.pkg` auto-install down to 10.6, 10.5 is manual) on Intel and Apple Silicon; Debian/Ubuntu (apt) on Linux. dnf/yum mappings exist but are best-effort and untested.
 
 | Area | macOS | Linux |
 | --- | --- | --- |
 | Dotfiles | copied | copied |
 | Packages | Homebrew/MacPorts | apt/dnf/yum + direct installers |
-| GUI apps | Homebrew casks | skipped/manual |
+| GUI apps | Homebrew casks | Chrome via apt (Debian/Ubuntu) |
 | Cursor settings | `~/Library/Application Support/Cursor/User` | `~/.config/Cursor/User` |
 | Claude Code settings | shared | shared |
 | Codex plugins | shared | shared |
@@ -192,7 +194,7 @@ Multi-line prompt with:
 - Screen window title updates via `PROMPT_COMMAND`
 
 ### Custom Functions (`.bash/functions/`)
-All support `-h`/`--help`. Most use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `dash`, `llmfix`, `bash-backup`) don't.
+All support `-h`/`--help`. Most use the `dot-` prefix; a few short, unambiguous tools (`awsso`, `llmfix`, `bash-backup`) don't.
 
 | Function | Purpose |
 |----------|---------|

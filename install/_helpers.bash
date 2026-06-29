@@ -310,6 +310,30 @@ function _linux_packages_for {
     esac
 }
 
+function _gh_apt_source_line {
+    printf 'deb [arch=%s signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\n' "$(dpkg --print-architecture 2>/dev/null || echo amd64)"
+}
+
+function _linux_install_gh {
+    command -v gh >/dev/null 2>&1 && { _install_step_done "gh" "already installed"; return 0; }
+    _ensure_sudo_cached || { _install_step_fail "gh" "sudo required"; return 1; }
+    _install_step_start "gh" "adding cli.github.com apt repo..."
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    if ! curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | sudo gpg --dearmor --yes -o /etc/apt/keyrings/githubcli-archive-keyring.gpg; then
+        _install_step_fail "gh" "keyring import failed"; return 1
+    fi
+    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    _gh_apt_source_line | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    _DOTFILES_APT_UPDATED=0  # force a refresh now that a new source exists
+    _apt_update_once || return 1
+    if sudo apt-get install -y gh >/dev/null 2>&1; then
+        _install_step_done_changed "gh" "installed (apt + cli.github.com)"
+    else
+        _install_step_fail "gh" "apt install failed"; return 1
+    fi
+}
+
 function _apt_update_once {
     if [[ "${DOTFILES_SKIP_APT_UPDATE:-0}" == 1 ]]; then
         _install_progress "apt metadata update skipped (DOTFILES_SKIP_APT_UPDATE=1)"
@@ -331,6 +355,10 @@ function _linux_pkg_install {
         _install_step_fail "$name" "no supported Linux package manager"
         return 1
     }
+
+    if [[ "$name" == gh && "$pm" == apt ]]; then
+        _linux_install_gh; return $?
+    fi
 
     packages=$(_linux_packages_for "$name" "$pm")
     if [[ -z "$packages" ]]; then
@@ -497,6 +525,28 @@ function _macports_selfupdate_once {
     _DOTFILES_MACPORTS_UPDATED=1
 }
 
+function _sudo_prompt_channel {
+    # Decide where to read the sudo password from. Prefer /dev/tty whenever it
+    # is writable — that is the only channel that survives `curl | bash` (stdin
+    # is the script) and captured sections (stdout/stderr redirected). Falls
+    # back to stdin when it is a TTY, else "none" (headless — caller needs
+    # DOTFILES_SUDO_PASSWORD).
+    local tty_writable stdin_tty
+    if [[ -n "${_DOTFILES_TEST_TTY_WRITABLE:-}" ]]; then
+        tty_writable="$_DOTFILES_TEST_TTY_WRITABLE"
+    else
+        { [ -w /dev/tty ]; } 2>/dev/null && tty_writable=1 || tty_writable=0
+    fi
+    if [[ -n "${_DOTFILES_TEST_STDIN_TTY:-}" ]]; then
+        stdin_tty="$_DOTFILES_TEST_STDIN_TTY"
+    else
+        [[ -t 0 ]] && stdin_tty=1 || stdin_tty=0
+    fi
+    if [[ "$tty_writable" == 1 ]]; then echo tty; return 0; fi
+    if [[ "$stdin_tty" == 1 ]]; then echo stdin; return 0; fi
+    echo none
+}
+
 function _dotfiles_sudo {
     # Use the real sudo binary, not a shell alias (Cursor sets `sudo -A`) and
     # never inherit SUDO_ASKPASS — both break non-interactive cache refresh.
@@ -517,9 +567,6 @@ function _ensure_sudo_cached {
     fi
 
     local msg="Caching sudo credentials for the install (you'll be prompted once)..."
-    # Agent/CI shells often lack a controlling TTY and may not share the
-    # parent's sudo timestamp with child install.sh processes. Accept a
-    # one-shot password for that case only — never persist it in config.
     if [[ -n "${DOTFILES_SUDO_PASSWORD:-}" ]]; then
         if printf '%s\n' "$DOTFILES_SUDO_PASSWORD" | _dotfiles_sudo -S -v 2>/dev/null; then
             _spawn_sudo_keepalive
@@ -527,22 +574,24 @@ function _ensure_sudo_cached {
         fi
     fi
 
-    # _section_run redirects stdout/stderr to a temp file. Route the cache
-    # prompt to /dev/tty so the password dialog is never swallowed mid-install.
-    if [[ "${_DOTFILES_SECTION_CAPTURE:-0}" == 1 ]] && { [ -w /dev/tty ] 2>/dev/null; }; then
-        printf '%s\n' "$msg" > /dev/tty
-        if ! _dotfiles_sudo -v < /dev/tty > /dev/tty 2>&1; then
-            printf '❌ sudo access required\n' > /dev/tty
+    case "$(_sudo_prompt_channel)" in
+        tty)
+            printf '%s\n' "$msg" > /dev/tty
+            if ! _dotfiles_sudo -v < /dev/tty > /dev/tty 2>&1; then
+                printf '❌ sudo access required\n' > /dev/tty
+                return 1
+            fi
+            ;;
+        stdin)
+            echo "$msg"
+            _dotfiles_sudo -v || { echo "❌ sudo access required"; return 1; }
+            ;;
+        none)
+            echo "$msg" >&2
+            echo "❌ sudo access required (no TTY — run from Terminal or set DOTFILES_SUDO_PASSWORD for this session)" >&2
             return 1
-        fi
-    elif [[ -t 0 ]]; then
-        echo "$msg"
-        _dotfiles_sudo -v || { echo "❌ sudo access required"; return 1; }
-    else
-        echo "$msg" >&2
-        echo "❌ sudo access required (no TTY — run from Terminal or set DOTFILES_SUDO_PASSWORD for this session)" >&2
-        return 1
-    fi
+            ;;
+    esac
     _spawn_sudo_keepalive
 }
 
@@ -848,13 +897,14 @@ function _macports_name_for {
     # https://ports.macports.org/search/?q=<foo>&name=on — port names often
     # diverge from brew formula names (e.g. brew "node" → port "nodejs22").
     local brew_name="$1"
+    local PORT_PYTHON=python312 PORT_NODE=nodejs22 PORT_NPM=npm10 PY=py312
     case "$brew_name" in
-        python3)    echo "python312" ;;
-        node)       echo "nodejs22" ;;
-        npm)        echo "npm10" ;;
+        python3)    echo "$PORT_PYTHON" ;;
+        node)       echo "$PORT_NODE" ;;
+        npm)        echo "$PORT_NPM" ;;
         pipx)       echo "pipx" ;;
-        virtualenv) echo "py312-virtualenv" ;;
-        flake8)     echo "py312-flake8" ;;
+        virtualenv) echo "${PY}-virtualenv" ;;
+        flake8)     echo "${PY}-flake8" ;;
         awscli)     _macports_awscli_port_name ;;
         flyctl)     echo "" ;;  # not packaged — caller falls back
         # Same name in both managers:
